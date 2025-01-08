@@ -1,0 +1,32 @@
+@server = http://localhost
+@port = 3000
+@api_path = api
+@api_version = 1
+@url = {{server}}:{{port}}/{{api_path}}/v{{api_version}}
+
+###############################################
+
+// Test: Get all lenses
+// Expected HTTP response status code: 200
+// Expected response: an array (json) with all courses (including subject for each course)
+// [{}, {}, ...]
+GET {{url}}/lenses
+
+###############################################
+
+// Test: Get a lens that exists
+// Expected HTTP response status code: 200
+// Expected response: a course object (json) with course data, including subject
+// {"courseCode": "DT190G","subjectCode": "DTA","level": "GR","progression": "B","name": "Javascriptbaserad webbutveckling","points": 7.5,"subject": "Datateknik"}
+GET {{url}}/lenses/varilux_x_4d
+
+###############################################
+
+// Test: Get a lens that does not exists
+// Expected HTTP response status code: 200
+// Expected response: an empty object (json)
+// {}
+GET {{url}}/lenses/varilux_x_8d
+
+###############################################
+
