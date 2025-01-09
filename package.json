@@ -2,9 +2,21 @@
   "name": "jola2311-project-backend-dt190g-ht24",
   "version": "0.0.0",
   "private": true,
+  "description": "En glasmanual för en optikerkedja för att underlätta försäljning och beställningar",
+  "main": "app.js",
   "scripts": {
     "start": "node ./bin/www"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/miun_dt190g/jola2311_project_backend_dt190g.git"
+  },
+  "author": "Joel Lansgren",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://bitbucket.org/miun_dt190g/jola2311_project_backend_dt190g/issues"
+  },
+  "homepage": "https://bitbucket.org/miun_dt190g/jola2311_project_backend_dt190g#readme",
   "engines": {
     "node": ">=20.0.0 <21.0.0"
   },
@@ -17,17 +29,5 @@
     "jola2311-project-backend-dt190g-ht24": "file:",
     "mongoose": "^8.9.3",
     "morgan": "~1.9.1"
-  },
-  "description": "En glasmanual för en optikerkedja för att underlätta försäljning och beställningar",
-  "main": "app.js",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@bitbucket.org/miun_dt190g/jola2311_project_backend_dt190g.git"
-  },
-  "author": "Joel Lansgren",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://bitbucket.org/miun_dt190g/jola2311_project_backend_dt190g/issues"
-  },
-  "homepage": "https://bitbucket.org/miun_dt190g/jola2311_project_backend_dt190g#readme"
+  }
 }
