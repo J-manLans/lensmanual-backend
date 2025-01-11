@@ -1,0 +1,189 @@
+@server = http://localhost
+@port = 3000
+@api_path = api
+@api_version = 1
+@url = {{server}}:{{port}}/{{api_path}}/v{{api_version}}
+
+###############################################
+
+// Test: Get all lenses
+// Expected HTTP response status code: 200
+// Expected response: an array (json) with all courses (including subject for each course)
+// [{}, {}, ...]
+GET {{url}}/lenses
+
+###############################################
+
+// Test: Get a lens that exists
+// Expected HTTP response status code: 200
+// Expected response: a lens object (json), including data for diameterStrengthBounds
+GET {{url}}/lenses/Varilux X2
+
+###############################################
+
+// Test: Get a lens that does not exists
+// Expected HTTP response status code: 404
+// Expected response: an empty object (json)
+// {}
+GET {{url}}/lenses/no_lens
+
+###############################################
+
+// Test: Post (add) a lens that is already in 'lenses'
+// Expected HTTP response status code: 409
+// Expected response: an object (json) with an error message stating that the lense already exist
+POST {{url}}/lenses HTTP/1.1
+content-type: application/json
+
+{
+   "type": "Progressiva",
+    "name": "Varilux X 4D",
+    "quality": 7,
+    "manufacturingType": "Rx",
+    "treatment": ["CSP + UV", "EPS"],
+    "staticCorrectionDetails": {
+        "prism": 5,
+        "addition": { "min": 0.75, "max": 3.5 }
+    },
+    "indexData": [
+        {
+            "name" : "Lineis",
+            "price": 14900,
+            "diameterStrengthBounds": []
+        },
+        {
+            "name": "Stylis",
+            "price": 13400,
+            "diameterStrengthBounds": []
+        },
+        {
+            "name": "Ormix",
+            "price": 12900,
+            "diameterStrengthBounds": []
+        }
+    ]
+}
+
+###############################################
+
+// Test: Post (add) a lens with missing fields
+// Expected HTTP response status code: 400
+// Expected response: an object (json) with an error message stating that the lense validation
+// failed, together with what fields are missing or wrong
+POST {{url}}/lenses HTTP/1.1
+content-type: application/json
+
+{
+    "quality": 7.5,
+    "manufacturingType": "Wrong input",
+    "staticCorrectionDetails": {
+        "addition": { "min": 0.75, "max": 3.5 }
+    },
+    "indexData": [
+        {
+            "name" : "Lineis",
+            "price": 14900,
+            "diameterStrengthBounds": []
+        },
+        {
+            "name": "Stylis",
+            "diameterStrengthBounds": []
+        },
+        {
+            "name": "Ormix",
+            "price": 12900
+        }
+    ]
+}
+
+###############################################
+
+// Test: Post (add) a lens that is NOT already in 'lenses'
+// Expected HTTP response status code: 201
+// Expected response: an object (json) with the added lens
+POST {{url}}/lenses HTTP/1.1
+content-type: application/json
+
+{
+    "type": "Progressiva",
+    "name": "Varilux Physio 3.0",
+    "quality": 5,
+    "manufacturingType": "Rx",
+    "treatment": ["CSP + UV", "EPS"],
+    "staticCorrectionDetails": {
+        "prism": 5,
+        "addition": { "min": 0.75, "max": 4.0 }
+    },
+    "indexData": [
+        {
+            "name" : "Lineis",
+            "price": 11500,
+            "diameterStrengthBounds": []
+        },
+        {
+            "name": "Stylis",
+            "price": 10000,
+            "diameterStrengthBounds": []
+        },
+        {
+            "name": "Ormix",
+            "price": 9500,
+            "diameterStrengthBounds": []
+        }
+    ]
+}
+
+###############################################
+
+// Test: Delete a lens that exists
+// Expected HTTP response status code: 200
+// Expected response: an object (json) with the deleted lense
+DELETE {{url}}/lenses/Varilux Physio 3.0
+
+###############################################
+
+// Test: Delete a lense that does not exists
+// Expected HTTP response status code: 404
+// Expected response: an object (json) with an error message stating that the lense does not exist
+DELETE {{url}}/lenses/no_lens
+
+###############################################
+
+// Test: Patch (update) a lense that exists with correct information
+// Expected HTTP response status code: 200
+// Expected response: an object (json) with the updated lens
+PATCH {{url}}/lenses/Varilux Physio 3.0 HTTP/1.1
+content-type: application/json
+
+{
+   "quality": 5,
+   "manufacturingType": "RX"
+}
+
+###############################################
+
+// Test: Patch (update) a lense that exists with faulty information
+// Expected HTTP response status code: 400
+// Expected response: an object (json) with an error message stating that the lense validation
+// failed, together with what fields are wrong
+PATCH {{url}}/lenses/Varilux Physio 3.0 HTTP/1.1
+content-type: application/json
+
+{
+   "quality": 8,
+   "manufacturingType": "Not Available"
+}
+
+###############################################
+
+// Test: Patch (update) a lense that don't exists
+// Expected HTTP response status code: 404
+// Expected response: an object (json) with an error message stating that the lense validation
+// failed, together with what fields are wrong
+PATCH {{url}}/lenses/no_lens HTTP/1.1
+content-type: application/json
+
+{
+   "quality": 3,
+   "manufacturingType": "RX"
+}
