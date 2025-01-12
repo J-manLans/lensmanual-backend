@@ -18,7 +18,7 @@ GET {{url}}/lenses
 // so to get the correct lens we need to add the quality as well.
 // Expected HTTP response status code: 200
 // Expected response: a lens object (json), including data for diameterStrengthBounds
-GET {{url}}/lenses/Basix PAL 2.0 SYN/1
+GET {{url}}/lenses/Basix PAL 2.0 SYN/0.5
 
 ###############################################
 
@@ -139,25 +139,25 @@ content-type: application/json
 // Test: Delete a lens that exists
 // Expected HTTP response status code: 200
 // Expected response: an object (json) with the deleted lense
-DELETE {{url}}/lenses/Varilux Physio 3.0
+DELETE {{url}}/lenses/Varilux Physio 3.0/5
 
 ###############################################
 
 // Test: Delete a lense that does not exists
 // Expected HTTP response status code: 404
 // Expected response: an object (json) with an error message stating that the lense does not exist
-DELETE {{url}}/lenses/no_lens
+DELETE {{url}}/lenses/no_lens/0
 
 ###############################################
 
 // Test: Patch (update) a lense that exists with correct information
 // Expected HTTP response status code: 200
 // Expected response: an object (json) with the updated lens
-PATCH {{url}}/lenses/Varilux Physio 3.0 HTTP/1.1
+PATCH {{url}}/lenses/Varilux Physio 3.0/5 HTTP/1.1
 content-type: application/json
 
 {
-   "quality": 5,
+   "type": "Progressiva",
    "manufacturingType": "RX"
 }
 
@@ -167,7 +167,7 @@ content-type: application/json
 // Expected HTTP response status code: 400
 // Expected response: an object (json) with an error message stating that the lense validation
 // failed, together with what fields are wrong
-PATCH {{url}}/lenses/Varilux Physio 3.0 HTTP/1.1
+PATCH {{url}}/lenses/Varilux Physio 3.0/5 HTTP/1.1
 content-type: application/json
 
 {
@@ -181,7 +181,7 @@ content-type: application/json
 // Expected HTTP response status code: 404
 // Expected response: an object (json) with an error message stating that the lense validation
 // failed, together with what fields are wrong
-PATCH {{url}}/lenses/no_lens HTTP/1.1
+PATCH {{url}}/lenses/no_lens/0 HTTP/1.1
 content-type: application/json
 
 {

@@ -21,15 +21,13 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:lensName/:lensQuality', async (req, res) => {
-  const { lensName, lensQuality } = req.params
-
   try {
     /*
     Get the requested lens and de-structures the result using array destructuring,
     meaning it grabs the first element (and only one) of the array returned from the promise and
     saves it in the lens constant
     */
-    const [lens] = await getEnrichedLenses(lensName, lensQuality)
+    const [lens] = await getEnrichedLenses(req.params.lensName, req.params.lensQuality)
 
     // If the array is empty we send an empty object together with a 404 not found status
     if (!lens) return res.status(404).send('{}')
@@ -47,19 +45,16 @@ router.get('/:lensName/:lensQuality', async (req, res) => {
 ================================================*/
 
 router.post('/', async (req, res) => {
-  // Extract the lens name from the body of the request...
-  const lensID = req.body.name
-
   try {
-    //...and check if it exists in the database
-    const lens = await Lens.findOne({ name: lensID })
+    // Check if the lens exists in the database
+    const lens = await Lens.findOne({ name: req.body.name, quality: req.body.quality })
 
     // If the lens don't exists we go ahead and add it
     if (!lens) {
       // Build the lens object
       const newLens = new Lens({
         type: req.body.type,
-        name: lensID,
+        name: req.body.name,
         quality: req.body.quality,
         manufacturingType: req.body.manufacturingType.toUpperCase(),
         treatment: req.body.treatment,
@@ -89,21 +84,22 @@ router.post('/', async (req, res) => {
   DELETE
 ================================================*/
 
-router.delete('/:UrlLensName', async (req, res) => {
-  // Extract the lens name from the body of the request...
-  const deleteID = req.params.UrlLensName
+router.delete('/:lensName/:lensQuality', async (req, res) => {
+  // Extract the lens name and quality from the body of the request...
+  const { lensName, lensQuality } = req.params
 
   try {
     // ...and retrieve the lens from the database if it exists
-    const [deleteLens] = await getEnrichedLenses(deleteID)
+    const [deleteLens] = await getEnrichedLenses(lensName, lensQuality)
 
     if (deleteLens) {
-      await Lens.findOneAndDelete({ name: deleteID })  // If it exist we delete it with the id...
+      // If it exist we delete it with the compound id...
+      await Lens.findOneAndDelete({ name: lensName, quality: parseFloat(lensQuality) })
       return res.send(deleteLens)  // ...and send the deleted lens as a response
     }
 
     // Error message if the lens don't exists
-    res.status(404).send({ error: `The lens ${deleteID} does not exist`})
+    res.status(404).send({ error: `The lens ${lensName} does not exist`})
 
   } catch (error) {  // Error handling
     console.error(error);
@@ -115,14 +111,14 @@ router.delete('/:UrlLensName', async (req, res) => {
   PATCH
 ================================================*/
 
-router.patch('/:UrlLensName', async (req, res) => {
+router.patch('/:lensName/:lensQuality', async (req, res) => {
   // Extract the lens name from the body of the request...
-  const updateID = req.params.UrlLensName
+  const { lensName, lensQuality } = req.params
 
   try {
     // ...and tries to update it
     const updatedLens = await Lens.findOneAndUpdate(
-      { name: updateID }, // Query filter
+      { name: lensName, quality: parseFloat(lensQuality) }, // Query filter
       { $set: req.body }, // Update operation
       // returns the new document after the update and run validators on the fields that are to be updated
       { new: true, runValidators: true}
@@ -134,7 +130,7 @@ router.patch('/:UrlLensName', async (req, res) => {
     }
 
     // Error message if the lens don't exists
-    res.status(404).send({ error: `The lens ${updateID} does not exist`})
+    res.status(404).send({ error: `The lens ${lensName} does not exist`})
 
   } catch (error) {  // Checking for validation errors
     if (error.name === 'ValidationError') {
@@ -208,14 +204,11 @@ function getEnrichedLenses(lensName, lensQuality) {
   return Lens.aggregate([
     {
       /*
-      If lensName is provided, only documents with a matching 'name' field will be included.
-      If lensName is not provided (null or empty), an empty object is used, which effectively
+      If lensName and lensQuality is provided, only documents with a matching fields will be included.
+      If not provided (null or empty), an empty object is used, which effectively
       applies no filtering, meaning all documents are included in the result.
       */
-      $match: {
-        ...(lensName ? { name: lensName } : {}),
-        ...(lensQuality ? { quality: parseFloat(lensQuality) } : {})
-      }
+      $match: lensName && lensQuality ? { name: lensName, quality: parseFloat(lensQuality) } : {}
     },
     {
       /*
