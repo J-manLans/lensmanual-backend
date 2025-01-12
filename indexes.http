@@ -1,0 +1,13 @@
+@server = http://localhost
+@port = 3000
+@api_path = api
+@api_version = 1
+@url = {{server}}:{{port}}/{{api_path}}/v{{api_version}}
+
+###############################################
+
+// Test: Get all indexes
+// Expected HTTP response status code: 200
+// Expected response: an array (json) with all indexes
+// [{}, {}, ...]
+GET {{url}}/lenses/indexes

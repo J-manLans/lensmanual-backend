@@ -20,14 +20,16 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:UrlLensName', async (req, res) => {
+router.get('/:lensName/:lensQuality', async (req, res) => {
+  const { lensName, lensQuality } = req.params
+
   try {
     /*
     Get the requested lens and de-structures the result using array destructuring,
     meaning it grabs the first element (and only one) of the array returned from the promise and
     saves it in the lens constant
     */
-    const [lens] = await getEnrichedLenses(req.params.UrlLensName)
+    const [lens] = await getEnrichedLenses(lensName, lensQuality)
 
     // If the array is empty we send an empty object together with a 404 not found status
     if (!lens) return res.status(404).send('{}')
@@ -202,8 +204,7 @@ function validationErrors(error) {
  * The array will contain documents from the lenses collection enriched with data from related collections
  * (indexes, diameterStrengthBounds), or an empty array if a lensName is provided but no matching documents are found.
  */
-function getEnrichedLenses(lensName) {
-
+function getEnrichedLenses(lensName, lensQuality) {
   return Lens.aggregate([
     {
       /*
@@ -211,7 +212,10 @@ function getEnrichedLenses(lensName) {
       If lensName is not provided (null or empty), an empty object is used, which effectively
       applies no filtering, meaning all documents are included in the result.
       */
-      $match: lensName ? { name: lensName } : {}
+      $match: {
+        ...(lensName ? { name: lensName } : {}),
+        ...(lensQuality ? { quality: parseFloat(lensQuality) } : {})
+      }
     },
     {
       /*
@@ -298,7 +302,7 @@ function getEnrichedLenses(lensName) {
     {
       /*
       Excludes the fields 'diameterStrengthBounds' and 'indexes' from the final result.
-      Only the original fields, excluding '_id', will be included in the output.
+      Only the original fields, excluding '_id' and '__v', will be included in the output.
       */
       $project: {
         __v: 0,

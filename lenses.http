@@ -14,10 +14,11 @@ GET {{url}}/lenses
 
 ###############################################
 
-// Test: Get a lens that exists
+// Test: Get a lens that exists, the lenses have a composite ID
+// so to get the correct lens we need to add the quality as well.
 // Expected HTTP response status code: 200
 // Expected response: a lens object (json), including data for diameterStrengthBounds
-GET {{url}}/lenses/Varilux X2
+GET {{url}}/lenses/Varilux X2/7
 
 ###############################################
 
@@ -25,7 +26,7 @@ GET {{url}}/lenses/Varilux X2
 // Expected HTTP response status code: 404
 // Expected response: an empty object (json)
 // {}
-GET {{url}}/lenses/no_lens
+GET {{url}}/lenses/no_lens/0
 
 ###############################################
 

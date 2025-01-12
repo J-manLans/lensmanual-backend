@@ -16,6 +16,8 @@ require('dotenv').config()  // Load environment variables from the .env file int
 const lensesRouter = require('./routes/v1/lenses-v1');
 /** Router for handling diameters-related endpoints (API v1). */
 const diametersRouter = require('./routes/v1/diameters-v1');
+/** Router for handling indexes-related endpoints (API v1). */
+const indexesRouter = require('./routes/v1/indexes-v1');
 
 /* ==============================
     API versions
@@ -51,6 +53,7 @@ mongoose.connect(dbServer)
     // Use the routers for api v1
     // NOTE: The most specific route must be defined first,
     // otherwise we get a hit on the more general one
+    app.use(apiVersion1 + '/lenses/indexes', indexesRouter);
     app.use(apiVersion1 + '/lenses/diameters', diametersRouter);
     app.use(apiVersion1 + '/lenses', lensesRouter);
 
