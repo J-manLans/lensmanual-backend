@@ -11,3 +11,11 @@
 // Expected response: an array (json) with all diameterStrengthBounds
 // [{}, {}, ...]
 GET {{url}}/lenses/diameters
+
+###############################################
+
+// Test: Get a diameter strength bound (dsb) that exists, the dsb have a composite ID
+// so to get the correct dsb we need to add both the type and quality.
+// Expected HTTP response status code: 200
+// Expected response: a dsb object (json)
+GET {{url}}/lenses/diameters/Progressiva/6 & 5

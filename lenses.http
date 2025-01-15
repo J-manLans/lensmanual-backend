@@ -117,11 +117,6 @@ content-type: application/json
     },
     "indexData": [
         {
-            "name" : "Lineis",
-            "price": 11500,
-            "diameterStrengthBounds": []
-        },
-        {
             "name": "Stylis",
             "price": 10000,
             "diameterStrengthBounds": []
