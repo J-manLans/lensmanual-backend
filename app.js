@@ -63,15 +63,14 @@ mongoose.connect(dbServer)
 
     /**
      * The port on which the Express server will listen for incoming requests.
-     * Uses the environment variable PORT.
+     * Uses the environment variable PORT, if it exists, or defaults to 3000.
      */
     const port = process.env.PORT || 3000
-    const host = process.env.HOST || 'localhost'
 
     // Start server, binding it to specified port
     app.listen(port, function() {
         // Log a message when server is successfully started
-        console.log(`Server is running on port ${port} and is available at http://${host}:${port}`)
+        console.log(`Server is running on port ${port} and is available at http://localhost:3000`)
     })
 
     // Define a route for handling HTTP GET requests to the root path
