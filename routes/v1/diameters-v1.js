@@ -27,4 +27,36 @@ router.get('/:lensType/:lensQuality', async (req, res) => {
   }
 })
 
+router.patch('/:lensType/:lensQuality', async (req, res) => {
+  // Extract the data from the body of the request...
+  const { lensType, lensQuality } = req.params
+
+  try {
+    // ...and tries to update it
+    const updatedDsb = await DiameterStrengthBounds.findOneAndUpdate(
+      { type: lensType, quality: lensQuality }, // Query filter
+      { $set: req.body }, // Update operation
+      // returns the new document after the update and run validators on the fields that are to be updated
+      { new: true, runValidators: true}
+    )
+
+    // If the operation was successful we send the result
+    if (updatedDsb) {
+      return res.send(updatedDsb)
+    }
+
+    // Error message if the lens don't exists
+    res.status(404).send({ error: `The diameter strength bound does not exist`})
+
+  } catch (error) {  // Checking for validation errors
+    if (error.name === 'ValidationError') {
+      return res.status(400).send(validationErrors(error))
+    }
+
+    console.error(error);  // General error handling
+    res.status(500).send({ error: errMessage });
+  }
+
+})
+
 module.exports = router;

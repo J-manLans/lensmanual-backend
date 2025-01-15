@@ -18,7 +18,7 @@ GET {{url}}/lenses
 // so to get the correct lens we need to add the quality as well.
 // Expected HTTP response status code: 200
 // Expected response: a lens object (json), including data for diameterStrengthBounds
-GET {{url}}/lenses/Basix PAL 2.0 SYN/0.5
+GET {{url}}/lenses/Jollas singles/6
 
 ###############################################
 

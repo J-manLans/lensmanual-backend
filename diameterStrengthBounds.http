@@ -18,4 +18,4 @@ GET {{url}}/lenses/diameters
 // so to get the correct dsb we need to add both the type and quality.
 // Expected HTTP response status code: 200
 // Expected response: a dsb object (json)
-GET {{url}}/lenses/diameters/Progressiva/6 & 5
+GET {{url}}/lenses/diameters/Progressiva/7
