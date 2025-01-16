@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
     // Get all lenses with additional information from the database
     const lenses = await getEnrichedLenses()
 
-    res.send(lenses);  // Send the array of lenses as a response
+    res.json(lenses);  // Send the array of lenses as a response
 
   } catch (error) {  // Error handling
     console.error(error);
@@ -32,7 +32,7 @@ router.get('/:lensName/:lensQuality', async (req, res) => {
     // If the array is empty we send an empty object together with a 404 not found status
     if (!lens) return res.status(404).send('{}')
 
-    res.send(lens)  // Send the lense as a response
+    res.json(lens)  // Send the lense as a response
 
   } catch (error) {  // Error handling
     console.error(error);
@@ -46,6 +46,7 @@ router.get('/:lensName/:lensQuality', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
+    res.json
     // Check if the lens exists in the database
     const lens = await Lens.findOne({ name: req.body.name, quality: req.body.quality })
 
@@ -95,7 +96,7 @@ router.delete('/:lensName/:lensQuality', async (req, res) => {
     if (deleteLens) {
       // If it exist we delete it with the compound id...
       await Lens.findOneAndDelete({ name: lensName, quality: parseFloat(lensQuality) })
-      return res.send(deleteLens)  // ...and send the deleted lens as a response
+      return res.json(deleteLens)  // ...and send the deleted lens as a response
     }
 
     // Error message if the lens don't exists
@@ -127,7 +128,7 @@ router.patch('/:lensName/:lensQuality', async (req, res) => {
 
     // If the operation was successful we send the result
     if (updatedLens) {
-      return res.send(updatedLens)
+      return res.json(updatedLens)
     }
 
     // Error message if the lens don't exists
@@ -169,11 +170,6 @@ router.patch('/:lensName/:lensQuality', async (req, res) => {
  * }
  */
 function validationErrors(error) {
-  // NOTE: maybe look into the error messages and figure out how to remove the 'Path' and everything except the end of the path. ex: 'Path `staticCorrectionDetails.prism' should be: 'prism' only. Or maybe I handle this on the frontend.
-
-  // Print errors to the console
-  console.error(error);
-
   // Extracting the missing fields and their error messages by using
   // Object.keys which gives me an array of the specified keys
   const wrongOrMissingFields = Object.keys(error.errors);
