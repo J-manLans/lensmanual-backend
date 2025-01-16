@@ -1,11 +1,10 @@
 {
   "name": "jola2311-project-backend-dt190g-ht24",
   "version": "0.0.0",
-  "private": true,
   "description": "En glasmanual för en optikerkedja för att underlätta försäljning och beställningar",
   "main": "app.js",
   "scripts": {
-    "start": "node ./app.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
